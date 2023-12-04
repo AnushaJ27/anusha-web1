@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Grocery Store</title>
+  <style>
+    /* CSS Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+    }
+
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .product {
+      width: 200px;
+      border: 1px solid #ccc;
+      margin: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .filter {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Online Grocery Store</h1>
+    <form id="search-form">
+      <input type="text" id="search-input" placeholder="Search">
+      <input type="submit" value="Search">
+    </form>
+  </header>
+
+  <main>
+    <div class="filter">
+      <label for="sort-select">Sort By:</label>
+      <select id="sort-select">
+        <option value="name">Name</option>
+        <option value="price">Price</option>
+      </select>
+    </div>
+
+    <div class="filter">
+      <label for="category-select">Filter By Category:</label>
+      <select id="category-select">
+        <option value="all">All</option>
+        <option value="fruits">Fruits</option>
+        <option value="vegetables">Vegetables</option>
+        <option value="dairy">Dairy</option>
+        <option value="meat">Meat</option>
+      </select>
+    </div>
+
+    <div id="product-container"></div>
+  </main>
+
+  <footer>
+    <h3>Delivery Address</h3>
+    <form id="address-form">
+      <input type="text" id="address-input" placeholder="Enter your address">
+      <input type="submit" value="Submit">
+    </form>
+  </footer>
+
+  <script>
+    // JavaScript Code
+    const products = [
+      {
+        name: "Apple",
+        category: "fruits",
+        price: 1.99,
+        image: "https://example.com/apple.jpg"
+      },
+      {
+        name: "Banana",
+        category: "fruits",
+        price: 0.99,
+        image: "https://example.com/banana.jpg"
+      },
+      {
+        name: "Carrot",
+        category: "vegetables",
+        price: 0.49,
+        image: "https://example.com/carrot.jpg"
+      },
+      // Add more products here...
+    ];
+
+    const productContainer = document.getElementById("product-container");
+    const searchForm = document.getElementById("search-form");
+    const sortSelect = document.getElementById("sort-select");
+    const categorySelect = document.getElementById("category-select");
+
+    // Render products
+    function renderProducts() {
+      productContainer.innerHTML = "";
+
+      const filteredProducts = filterProducts();
+
+      filteredProducts.forEach(product => {
+        const productElement = document.createElement("div");
+        productElement.classList.add("product");
+
+        const imageElement = document.createElement("img");
+        imageElement.src = product.image;
+        imageElement.alt = product.name;
+        imageElement.style.width = "150px";
+        imageElement.style.height = "150px";
+
+        const nameElement = document.createElement("h3");
+        nameElement.textContent = product.name;
+
+        const priceElement = document.createElement("p");
+        priceElement.textContent = `$${product.price.toFixed(2)}`;
+
+        productElement.appendChild(imageElement);
+        productElement.appendChild(nameElement);
+        productElement.appendChild(priceElement);
+
+        productContainer.appendChild(productElement);
+      });
+    }
+
+    // Filter products based on search and category
+    function filterProducts() {
+      const searchTerm = searchForm.elements["search-input"].value.toLowerCase();
+      const category = categorySelect.value;
+
+      return products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+        const matchesCategory = category === "all" || product.category === category;
+
+        return matchesSearch && matchesCategory;
+      }).sort((a, b) => {
+        if (sortSelect.value === "price") {
+          return a.price - b.price;
+        } else {
+          return a.name.localeCompare(b.name);
+        }
+      });
+    }
+
+    // Event listeners
+    searchForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      renderProducts();
+    });
+
+    sortSelect.addEventListener("change", function() {
+      renderProducts();
+    });
+
+    categorySelect.addEventListener("change", function() {
+      renderProducts();
+    });
+
+    // Initial render
+    renderProducts();
+  </script>
+</body>
+</html>
